@@ -1,0 +1,2 @@
+Solar Synoptic Maps
+-------------------
