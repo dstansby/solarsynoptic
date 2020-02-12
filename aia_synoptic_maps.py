@@ -8,12 +8,12 @@ import sunpy.visualization.colormaps
 
 from aia_helpers import create_synoptic_map
 
-
-figdir = Path('synoptic_maps')
+# The directory to save fits files and figures to
+output_dir = Path('synoptic_maps')
 
 
 def save_map(m, crot):
-    m.save(figdir / 'fits' / f'aia193_synoptic_{crot}.fits', overwrite=True)
+    m.save(output_dir / 'fits' / f'aia193_synoptic_{crot}.fits', overwrite=True)
 
 
 def save_figure(m, crot):
@@ -31,7 +31,7 @@ def save_figure(m, crot):
     ax.set_xlim(left=-0.49999)
     ax.grid(False)
     # Save plot
-    plt.savefig(figdir / 'plots' / f'aia193_synoptic_{crot}.pdf',
+    plt.savefig(output_dir / 'plots' / f'aia193_synoptic_{crot}.pdf',
                 bbox_inches='tight')
     plt.close('all')
 

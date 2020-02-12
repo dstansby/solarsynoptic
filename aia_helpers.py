@@ -21,9 +21,8 @@ import sunpy.sun.constants
 
 from time_helpers import start_of_day
 
-
+# The directory in which maps are downloaded to and read from
 map_dir = pathlib.Path('/Users/dstansby/Data/aia')
-map_dir.mkdir(exist_ok=True, parents=True)
 
 
 def map_path(dtime):
