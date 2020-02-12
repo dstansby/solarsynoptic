@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 import pathlib
+import shutil
 import urllib.request
 import urllib.error
 
@@ -43,11 +44,11 @@ def download_start_of_day_map(dtime):
              a.Wavelength(193 * u.Angstrom))
     result = Fido.search(*query)
     try:
-        mappath = Fido.fetch(result[0, 0])[0]
+        download_path = Fido.fetch(result[0, 0])[0]
     except IndexError as e:
         raise RuntimeError(f'No map available for {dtime}')
-    mappath = pathlib.Path(mappath)
-    mappath.replace(map_path(dtime))
+    download_path = pathlib.Path(download_path)
+    shutil.move(download_path, map_path(dtime))
 
 
 def load_start_of_day_map(dtime):
