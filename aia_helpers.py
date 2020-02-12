@@ -117,7 +117,14 @@ def create_synoptic_map(endtime):
     recent_time = None
     for i in range(nmaps):
         dtime = endtime - timedelta(days=i)
-        aia_map = load_start_of_day_map(dtime)
+        try:
+            aia_map = load_start_of_day_map(dtime)
+        except RuntimeError as e:
+            if 'No map available' in str(e):
+                print(e)
+                continue
+            else:
+                raise
         aia_synop_map = synop_reproject(aia_map, shape)
 
         if recent_time is None:
