@@ -55,6 +55,7 @@ if __name__ == '__main__':
     while True:
         t = carrington_rotation_time(crot).to_datetime()
         map = create_synoptic_map(t, wlen)
+        print(f'Created AIA {wlen} synoptic map for rotation {crot}!')
         # Norm the data
         data = map.data
         data = map.plot_settings['norm'](data)
