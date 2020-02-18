@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -37,7 +38,19 @@ def save_figure(m, crot):
 
 
 if __name__ == '__main__':
-    crot = 2181
+    parser = argparse.ArgumentParser(description='Create AIA Carrington maps.')
+    parser.add_argument('--crot', metavar='crot', type=int, nargs=1,
+                        help='Carrington rotation to start at '
+                             '(before working backwards).', required=True)
+    parser.add_argument('--wlen', metavar='wavelegnth', type=int, nargs=1,
+                        help='Wavelength to use. Must be 193,', required=True)
+    args = parser.parse_args()
+    crot = args.crot[0]
+    wlen = args.wlen[0]
+
+    print(wlen)
+    wlens = [193, 211]
+    assert wlen in wlens, f'Wavelength must be in {wlens}'
 
     while True:
         t = carrington_rotation_time(crot).to_datetime()
