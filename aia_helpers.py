@@ -26,38 +26,38 @@ from time_helpers import start_of_day
 map_dir = pathlib.Path('/Users/dstansby/Data/aia')
 
 
-def map_path(dtime):
+def map_path(dtime, wlen):
     datestr = dtime.strftime('%Y%m%d')
-    return map_dir / f'aia_193_{datestr}.fits'
+    return map_dir / f'aia_{wlen}_{datestr}.fits'
 
 
-def synoptic_map_path(dtime):
+def synoptic_map_path(dtime, wlen):
     datestr = dtime.strftime('%Y%m%d')
-    return map_dir / f'aia_193_synoptic_{datestr}.fits'
+    return map_dir / f'aia_{wlen}_synoptic_{datestr}.fits'
 
 
-def download_start_of_day_map(dtime):
+def download_start_of_day_map(dtime, wlen):
     dtime = start_of_day(dtime)
     print(f'Fetching map for {dtime}')
     query = (a.Time(dtime, dtime + timedelta(days=1), dtime),
              a.Instrument('AIA'),
-             a.Wavelength(193 * u.Angstrom))
+             a.Wavelength(wlen * u.Angstrom))
     result = Fido.search(*query)
     try:
         download_path = Fido.fetch(result[0, 0])[0]
     except IndexError as e:
         raise RuntimeError(f'No map available for {dtime}')
     download_path = pathlib.Path(download_path)
-    shutil.move(download_path, map_path(dtime))
+    shutil.move(download_path, map_path(dtime, wlen))
 
 
-def load_start_of_day_map(dtime):
+def load_start_of_day_map(dtime, wlen):
     dtime = start_of_day(dtime)
-    mappath = map_path(dtime)
+    mappath = map_path(dtime, wlen)
     if not mappath.exists():
-        download_start_of_day_map(dtime)
+        download_start_of_day_map(dtime, wlen)
 
-    print(f'Loading AIA map for {dtime}')
+    print(f'Loading AIA {wlen} map for {dtime}')
     return Map(str(mappath))
 
 
@@ -85,13 +85,14 @@ def helioproj_header(shape_out, dtime):
     return header
 
 
-def synop_reproject(m, shape_out):
-    synop_map_path = synoptic_map_path(m.date.to_datetime())
+def synop_reproject(m, shape_out, wlen):
+    synop_map_path = synoptic_map_path(m.date.to_datetime(), wlen)
     if not synop_map_path.exists():
         m.meta['rsun_ref'] = sunpy.sun.constants.radius.to_value(u.m)
         header = synop_header(shape_out, m.date)
-        array, footprint = reproject_interp(m, WCS(header),
-                                            shape_out=shape_out)
+        with np.errstate(invalid='ignore'):
+            array, footprint = reproject_interp(m, WCS(header),
+                                                shape_out=shape_out)
         new_map = Map((array, header))
         new_map.save(str(synop_map_path))
 
@@ -101,9 +102,9 @@ def synop_reproject(m, shape_out):
     return new_map
 
 
-def create_synoptic_map(endtime):
+def create_synoptic_map(endtime, wlen):
     """
-    Create an AIA synoptic map, using 27 daily AIA 193 maps ending on the
+    Create a synoptic map, using 27 daily SDO/AIA maps ending on the
     endtime given. Note that the maps are taken from the start of each day.
 
     Returns
@@ -118,14 +119,14 @@ def create_synoptic_map(endtime):
     for i in range(nmaps):
         dtime = endtime - timedelta(days=i)
         try:
-            aia_map = load_start_of_day_map(dtime)
+            aia_map = load_start_of_day_map(dtime, wlen)
         except RuntimeError as e:
             if 'No map available' in str(e):
                 print(e)
                 continue
             else:
                 raise
-        aia_synop_map = synop_reproject(aia_map, shape)
+        aia_synop_map = synop_reproject(aia_map, shape, wlen)
 
         if recent_time is None:
             recent_time = dtime.strftime('%Y-%m-%dT%H:%M:%S')

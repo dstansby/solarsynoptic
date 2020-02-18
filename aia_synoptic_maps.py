@@ -48,13 +48,12 @@ if __name__ == '__main__':
     crot = args.crot[0]
     wlen = args.wlen[0]
 
-    print(wlen)
     wlens = [193, 211]
     assert wlen in wlens, f'Wavelength must be in {wlens}'
 
     while True:
         t = carrington_rotation_time(crot).to_datetime()
-        map = create_synoptic_map(t)
+        map = create_synoptic_map(t, wlen)
         # Norm the data
         data = map.data
         data = map.plot_settings['norm'](data)
