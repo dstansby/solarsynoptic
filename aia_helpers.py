@@ -88,6 +88,7 @@ def helioproj_header(shape_out, dtime):
 def synop_reproject(m, shape_out, wlen):
     synop_map_path = synoptic_map_path(m.date.to_datetime(), wlen)
     if not synop_map_path.exists():
+        print(f'Reprojecting AIA {wlen} map')
         m.meta['rsun_ref'] = sunpy.sun.constants.radius.to_value(u.m)
         header = synop_header(shape_out, m.date)
         with np.errstate(invalid='ignore'):
@@ -96,7 +97,6 @@ def synop_reproject(m, shape_out, wlen):
         new_map = Map((array, header))
         new_map.save(str(synop_map_path))
 
-    print(f'Loading {synop_map_path}')
     new_map = Map(synop_map_path)
     new_map.plot_settings = m.plot_settings
     return new_map
