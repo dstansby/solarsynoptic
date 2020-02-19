@@ -38,7 +38,7 @@ def save_figure(m, crot, wlen):
 
 
 if __name__ == '__main__':
-    wlens = [193, 211]
+    wlens = [171, 193, 211]
     parser = argparse.ArgumentParser(description='Create AIA Carrington maps.')
     parser.add_argument('--crot', metavar='crot', type=int, nargs=1,
                         help='Carrington rotation to start at '
