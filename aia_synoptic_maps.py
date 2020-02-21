@@ -19,7 +19,7 @@ def save_map(m, crot, wlen):
 
 def save_figure(m, crot, wlen):
     fig = plt.figure()
-    m.plot(cmap=f'sdoaia{wlen}')
+    m.plot(cmap=f'sdoaia{wlen}', vmin=0, vmax=1)
     # Plot formatting
     ax = plt.gca()
     # Add start and end times to title
@@ -38,7 +38,7 @@ def save_figure(m, crot, wlen):
 
 
 if __name__ == '__main__':
-    wlens = [171, 193, 211]
+    wlens = [94, 131, 171, 193, 211, 304, 335, 1600, 1700]
     parser = argparse.ArgumentParser(description='Create AIA Carrington maps.')
     parser.add_argument('--crot', metavar='crot', type=int, nargs=1,
                         help='Carrington rotation to start at '
