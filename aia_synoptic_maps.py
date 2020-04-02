@@ -11,6 +11,8 @@ from aia_helpers import create_synoptic_map
 
 # The directory to save fits files and figures to
 output_dir = Path('synoptic_maps')
+(output_dir / 'fits').mkdir(exist_ok=True)
+(output_dir / 'plots').mkdir(exist_ok=True)
 
 
 def save_map(m, crot, wlen):
