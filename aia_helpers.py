@@ -169,24 +169,6 @@ def create_synoptic_map(endtime, wlen):
     return synop_map
 
 
-def stonyhurst_reproject(synoptic_map, dtime):
-    '''
-    Reproject a synoptic map into an Earth facing view
-    (ie. a heliographic Stonyhurst frame).
-    '''
-    shape_out = [1024, 1024]
-    header = helioproj_header(shape_out, dtime)
-    wcs = WCS(header)
-    # Now have to manually set the observer coordinate
-    wcs.heliographic_observer = get_earth(dtime)
-    # array, footprint = reproject_interp(synoptic_map, wcs,
-    #                                     shape_out=shape_out)
-    array = np.random.rand(shape_out[0], shape_out[1])
-    new_map = Map((array, header))
-    new_map.plot_settings = synoptic_map.plot_settings
-    return new_map
-
-
 def aia_fov(dtime):
     l0 = sunpy.coordinates.sun.L0(dtime)
     bounds = Longitude([l0 - 90 * u.deg, l0 + 90 * u.deg])
