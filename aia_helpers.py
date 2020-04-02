@@ -20,6 +20,9 @@ from sunpy.map import Map, make_fitswcs_header
 from sunpy.coordinates import get_earth
 import sunpy.sun.constants
 
+from aiapy.calibrate import update_pointing, fix_observer_location, correct_degradation
+from aiapy.calibrate.util import get_correction_table
+
 from time_helpers import start_of_day
 
 # The directory in which maps are downloaded to and read from
@@ -63,6 +66,14 @@ def load_start_of_day_map(dtime, wlen):
     return Map(str(mappath))
 
 
+def prep(m):
+    # Prep an AIA map
+    m = update_pointing(m)
+    m = fix_observer_location(m)
+    m = correct_degradation(m, correction_table=get_correction_table())
+    return m
+
+
 def synop_header(shape_out, dtime):
     frame_out = SkyCoord(0, 0, unit=u.deg,
                          frame="heliographic_carrington",
@@ -91,6 +102,7 @@ def synop_reproject(m, shape_out, wlen):
     synop_map_path = synoptic_map_path(m.date, wlen)
     if not synop_map_path.exists():
         print(f'Reprojecting AIA {wlen} map')
+        m = prep(m)
         m.meta['rsun_ref'] = sunpy.sun.constants.radius.to_value(u.m)
         header = synop_header(shape_out, m.date)
         with np.errstate(invalid='ignore'):
