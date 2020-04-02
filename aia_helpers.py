@@ -29,6 +29,7 @@ from time_helpers import start_of_day
 map_dir = pathlib.Path('/Users/dstansby/Data/aia')
 if not map_dir.exists():
     raise RuntimeError(f'Map directory {map_dir} does not exist')
+correction_table = get_correction_table()
 
 
 def map_path(dtime, wlen):
@@ -70,7 +71,7 @@ def prep(m):
     # Prep an AIA map
     m = update_pointing(m)
     m = fix_observer_location(m)
-    m = correct_degradation(m, correction_table=get_correction_table())
+    m = correct_degradation(m, correction_table=correction_table)
     return m
 
 
