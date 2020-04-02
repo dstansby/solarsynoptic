@@ -24,6 +24,8 @@ from time_helpers import start_of_day
 
 # The directory in which maps are downloaded to and read from
 map_dir = pathlib.Path('/Users/dstansby/Data/aia')
+if not map_dir.exists():
+    raise RuntimeError(f'Map directory {map_dir} does not exist')
 
 
 def map_path(dtime, wlen):
