@@ -16,7 +16,8 @@ output_dir = Path('synoptic_maps')
 
 
 def save_map(m, crot, wlen):
-    m.save(output_dir / 'fits' / f'aia{wlen}_synoptic_{crot}.fits', overwrite=True)
+    m.save(output_dir / 'fits' / f'aia{wlen}_synoptic_{crot}.fits',
+           overwrite=True)
 
 
 def save_figure(m, crot, wlen):
