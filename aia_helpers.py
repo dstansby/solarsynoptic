@@ -33,16 +33,25 @@ correction_table = get_correction_table()
 
 
 def map_path(dtime, wlen):
+    """
+    Get the path of an AIA map at a given date and wavelength.
+    """
     datestr = dtime.strftime('%Y%m%d')
     return map_dir / f'aia_{wlen}_{datestr}.fits'
 
 
 def synoptic_map_path(dtime, wlen):
+    """
+    Get the path of an AIA synoptic map at a given date and wavelength.
+    """
     datestr = dtime.strftime('%Y%m%d')
     return map_dir / f'aia_{wlen}_synoptic_{datestr}.fits'
 
 
 def download_start_of_day_map(dtime, wlen):
+    """
+    Download the first map available on a given date, at a given wavelength.
+    """
     dtime = start_of_day(dtime)
     print(f'Fetching map for {dtime}')
     query = (a.Time(dtime, dtime + timedelta(days=1), dtime),
@@ -58,6 +67,9 @@ def download_start_of_day_map(dtime, wlen):
 
 
 def load_start_of_day_map(dtime, wlen):
+    """
+    Load the first map available on a given date, at a given wavelength.
+    """
     dtime = start_of_day(dtime)
     mappath = map_path(dtime, wlen)
     if not mappath.exists():
@@ -68,7 +80,9 @@ def load_start_of_day_map(dtime, wlen):
 
 
 def prep(m):
-    # Prep an AIA map
+    """
+    Prep an AIA map
+    """
     m = update_pointing(m)
     m = fix_observer_location(m)
     m = correct_degradation(m, correction_table=correction_table)
