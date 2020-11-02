@@ -20,7 +20,8 @@ from sunpy.map import Map, make_fitswcs_header
 from sunpy.coordinates import get_earth
 import sunpy.sun.constants
 
-from aiapy.calibrate import update_pointing, fix_observer_location, correct_degradation
+from aiapy.calibrate import (update_pointing, fix_observer_location,
+                             correct_degradation)
 from aiapy.calibrate.util import get_correction_table
 
 from time_helpers import start_of_day
