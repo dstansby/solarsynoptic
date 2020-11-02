@@ -21,7 +21,7 @@ from sunpy.coordinates import get_earth
 import sunpy.sun.constants
 
 from aiapy.calibrate import (update_pointing, fix_observer_location,
-                             correct_degradation)
+                             correct_degradation, normalize_exposure)
 from aiapy.calibrate.util import get_correction_table
 
 from time_helpers import start_of_day
@@ -87,6 +87,7 @@ def prep(m):
     m = update_pointing(m)
     m = fix_observer_location(m)
     m = correct_degradation(m, correction_table=correction_table)
+    m = normalize_exposure(m)
     return m
 
 
