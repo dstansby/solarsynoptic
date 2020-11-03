@@ -189,12 +189,14 @@ def create_synoptic_map(endtime, wlen):
         weights = long_weights(longs, l0)
 
         aia_data = aia_synop_map.data
-        aia_data[np.isnan(aia_data)] = 0
+        # Cast missing data to zero for now, to avoid adding NaNs to the total
+        aia_data[~np.isfinite(aia_data)] = 0
+
         data += (aia_data * weights)
         weight_sum += weights
 
-    weight_sum[weight_sum == 0] = np.nan
     data /= weight_sum
+    data[data == 0] = np.nan
 
     meta = aia_synop_map.meta
     meta['date-obs'] = recent_time
