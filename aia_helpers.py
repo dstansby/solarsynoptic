@@ -200,6 +200,10 @@ def create_synoptic_map(endtime, wlen):
 
     meta = aia_synop_map.meta
     meta['date-obs'] = recent_time
+    meta['instrume'] = 'AIA'    # Set so sunpy recognises this as an AIA map
+    meta['telescop'] = 'SDO'
+    meta['wavelnth'] = str(wlen)
+    meta['waveunit'] = 'Angstrom'
 
     synop_map = Map((data, meta))
     synop_map.plot_settings = aia_synop_map.plot_settings
