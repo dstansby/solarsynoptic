@@ -10,7 +10,7 @@ import sunpy.visualization.colormaps
 from aia_helpers import create_synoptic_map
 
 # The directory to save fits files and figures to
-output_dir = Path('synoptic_maps')
+output_dir = Path('/Volumes/Work/Data/synoptic_aia/synoptic_fits')
 (output_dir / 'fits').mkdir(exist_ok=True)
 (output_dir / 'plots').mkdir(exist_ok=True)
 
