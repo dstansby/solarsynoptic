@@ -21,8 +21,8 @@ def save_map(m, crot, wlen):
 
 
 def save_figure(m, crot, wlen):
-    fig = plt.figure()
-    m.plot(cmap=f'sdoaia{wlen}', vmin=0, vmax=1)
+    fig = plt.figure(tight_layout=True)
+    m.plot(cmap=f'sdoaia{wlen}', vmax=2000)
     # Plot formatting
     ax = plt.gca()
     # Add start and end times to title
