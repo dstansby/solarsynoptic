@@ -94,7 +94,8 @@ def prep(m):
 def synop_header(shape_out, dtime):
     frame_out = SkyCoord(0, 0, unit=u.deg,
                          frame="heliographic_carrington",
-                         obstime=dtime)
+                         obstime=dtime,
+                         observer='earth')
     header = make_fitswcs_header(
         shape_out, frame_out,
         scale=[180 / shape_out[0],
@@ -122,9 +123,10 @@ def synop_reproject(m, shape_out, wlen):
         m = prep(m)
         m.meta['rsun_ref'] = sunpy.sun.constants.radius.to_value(u.m)
         header = synop_header(shape_out, m.date)
+        wcs = WCS(header)
+        wcs.heliographic_observer = m.observer_coordinate
         with np.errstate(invalid='ignore'):
-            array, footprint = reproject_interp(m, WCS(header),
-                                                shape_out=shape_out)
+            array, footprint = reproject_interp(m, wcs, shape_out=shape_out)
         new_map = Map((array, header))
         new_map.save(str(synop_map_path))
 
