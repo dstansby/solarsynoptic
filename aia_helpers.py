@@ -139,6 +139,23 @@ def synop_reproject(m, shape_out, wlen):
     return new_map
 
 
+def long_weights(longs, l0):
+    """
+    Weights to use when adding synoptic maps.
+
+    Parameters
+    ----------
+    longs :
+        The longitude coordinates of each pixel in a map.
+    l0 :
+        The observer longitude.
+    """
+    dcenterlong = (longs - l0 + 180) % 360 - 180
+    weights = np.exp(-(dcenterlong / 15)**2)
+    weights[weights < 0] = 0
+    return weights / np.nanmax(weights)
+
+
 def create_synoptic_map(endtime, wlen):
     """
     Create a synoptic map, using 27 daily SDO/AIA maps ending on the
@@ -169,9 +186,7 @@ def create_synoptic_map(endtime, wlen):
         coord = sunpy.map.all_coordinates_from_map(aia_synop_map)
         longs = coord.lon.to(u.deg).value
         l0 = sunpy.coordinates.sun.L0(dtime).to(u.deg).value
-        dcenterlong = (longs - l0 + 180) % 360 - 180
-        weights = np.exp(-(dcenterlong / 10)**2)
-        weights[weights < 0] = 0
+        weights = long_weights(longs, l0)
 
         aia_data = aia_synop_map.data
         aia_data[np.isnan(aia_data)] = 0
