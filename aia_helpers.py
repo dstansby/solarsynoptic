@@ -26,8 +26,9 @@ from aiapy.calibrate.util import get_correction_table
 
 from time_helpers import start_of_day
 
+
 # The directory in which maps are downloaded to and read from
-map_dir = pathlib.Path('/Users/dstansby/Data/aia')
+map_dir = pathlib.Path('/Volumes/Work/Data/aia_new')
 if not map_dir.exists():
     raise RuntimeError(f'Map directory {map_dir} does not exist')
 correction_table = get_correction_table()
