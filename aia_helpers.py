@@ -84,6 +84,9 @@ def prep(m):
     """
     Prep an AIA map
     """
+    print('Prepping map')
+    if m.exposure_time <= 0 * u.s:
+        raise RuntimeError('Exposure time <= 0')
     m = update_pointing(m)
     m = fix_observer_location(m)
     m = correct_degradation(m, correction_table=correction_table)
@@ -153,13 +156,10 @@ def create_synoptic_map(endtime, wlen):
         dtime = endtime - timedelta(days=i)
         try:
             aia_map = load_start_of_day_map(dtime, wlen)
+            aia_synop_map = synop_reproject(aia_map, shape, wlen)
         except RuntimeError as e:
-            if 'No map available' in str(e):
-                print(e)
-                continue
-            else:
-                raise
-        aia_synop_map = synop_reproject(aia_map, shape, wlen)
+            print(e)
+            continue
 
         if recent_time is None:
             recent_time = dtime.strftime('%Y-%m-%dT%H:%M:%S')
