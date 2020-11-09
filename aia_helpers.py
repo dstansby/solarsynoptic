@@ -175,8 +175,8 @@ def create_synoptic_map(endtime, wlen):
         try:
             aia_map = load_start_of_day_map(dtime, wlen)
             aia_synop_map = synop_reproject(aia_map, shape, wlen)
-        except RuntimeError as e:
-            print(e)
+        except (RuntimeError, KeyError) as e:
+            print('\U0001F6A8 ' + str(e))
             continue
 
         if recent_time is None:
