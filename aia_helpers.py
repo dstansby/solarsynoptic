@@ -83,7 +83,13 @@ def load_start_of_day_map(dtime, wlen):
 
 def prep(m):
     """
-    Prep an AIA map
+    Prep an AIA map.
+
+    This runs (in order):
+        - `aiapy.calibrate.update_pointing`
+        - `aiapy.calibrate.fix_observer_location`
+        - `aiapy.caibrate.correct_degradation`
+        - `aiapy.calibrate.normalize_exposure`
     """
     print('Prepping map')
     if m.exposure_time <= 0 * u.s:
