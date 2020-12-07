@@ -1,4 +1,7 @@
 *.fits
 *.pdf
+
 *.DS_Store
+
 *.pyc
+*.egg-info
