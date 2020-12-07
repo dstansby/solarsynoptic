@@ -1,3 +1,8 @@
+"""
+AIA Carrington map
+==================
+"""
+
 import astropy.units as u
 
 from solarsynoptic.data import aia_start_of_day_map

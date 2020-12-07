@@ -5,3 +5,8 @@
 
 *.pyc
 *.egg-info
+
+*.doctree
+docs/_build
+docs/api
+docs/auto_examples
