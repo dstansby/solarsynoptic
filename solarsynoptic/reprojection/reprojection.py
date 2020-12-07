@@ -30,7 +30,8 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR'):
     carrington_map : sunpy.map.Genericmap
         Reprojected map.
     """
-    header_out = carrington_header(smap.date, shape_out)
+    header_out = carrington_header(smap.date, shape_out,
+                                   projection_code=latitude_projection)
     wcs_out = WCS(header_out)
     wcs_out.heliographic_observer = smap.observer_coordinate
     # Do the reprojection
