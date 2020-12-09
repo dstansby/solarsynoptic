@@ -4,6 +4,7 @@ Tools for reprojecting maps.
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 from astropy.wcs import WCS
+import numpy as np
 from sunpy.map import Map, make_fitswcs_header
 from reproject import reproject_interp
 
@@ -67,4 +68,11 @@ def carrington_header(dtime, shape_out, projection_code='CAR'):
         scale=[180 / shape_out[0],
                360 / shape_out[1]] * u.deg / u.pix,
         projection_code=projection_code)
+    # Need to manually correct the CDELT2 value if using CEA
+    if projection_code == 'CEA':
+        # Since, this map uses the cylindrical equal-area (CEA) projection,
+        # the spacing should be modified to 180/pi times the sin(latitude)
+        # spacing
+        # Reference: Section 5.5, Thompson 2006
+        header['cdelt2'] = 180 / np.pi * 2 / shape_out[0]
     return header
