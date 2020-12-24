@@ -5,6 +5,7 @@ solarsynoptic
    :maxdepth: 2
    :caption: Contents:
 
+   guide
    auto_examples/index
    api
 
