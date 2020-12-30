@@ -15,6 +15,8 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR'):
     """
     Reproject *smap* into a Carrington frame of reference.
 
+    This is done using the `reproject.reproject_interp` function.
+
     Notes
     -----
     The input map is reprojected into a map covering the full surface of the
