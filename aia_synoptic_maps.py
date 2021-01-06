@@ -58,7 +58,7 @@ if __name__ == '__main__':
     while True:
         t = carrington_rotation_time(crot).to_datetime()
         m = create_synoptic_map(t, wlen)
-        print(f'Created AIA {wlen} synoptic map for rotation {crot}!')
+        print(f'Created AIA {wlen} synoptic map for rotation {crot} 🎉')
         # Save the map
         save_map(m, crot, wlen)
         save_figure(m, crot, wlen)
