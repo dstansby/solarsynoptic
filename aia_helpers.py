@@ -54,6 +54,8 @@ def download_start_of_day_map(dtime, wlen):
     """
     Download the first map available on a given date, at a given wavelength.
     """
+    if dtime > datetime.now():
+        raise RuntimeError(f'No map available for {dtime}')
     dtime = start_of_day(dtime)
     print(f'Fetching map for {dtime}')
     query = (a.Time(dtime, dtime + timedelta(days=1), dtime),
