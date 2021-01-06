@@ -18,6 +18,7 @@ def map_path(dtime):
 
 def stereo_beacon_start_of_day(dtime):
     datestr = dtime.strftime('%Y%m%d')
+    # TODO: be more intelligent and scrape the filenames
     for time in ['000530', '001615', '005530', '010530', '011530', '043530', ]:
         url = ('https://stereo-ssc.nascom.nasa.gov/pub/beacon/ahead/secchi/img'
                f'/euvi/{datestr}/{datestr}_{time}_n7euA.fts')
