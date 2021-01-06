@@ -18,6 +18,7 @@ shape_out = [180, 360]
 # Fetch a single AIA map. This will download the first map observed on the
 # given day.
 map_in = aia_start_of_day_map('2020-01-01', 193 * u.Angstrom)
+
 ###############################################################################
 # Reproject the map into a Carrington frame of reference, and show the result.
 map_out = reproject_carrington(map_in, shape_out)
@@ -31,3 +32,5 @@ map_out.plot()
 map_out = reproject_carrington(map_in, shape_out, latitude_projection='CEA')
 fig = plt.figure()
 map_out.plot()
+
+plt.show()
