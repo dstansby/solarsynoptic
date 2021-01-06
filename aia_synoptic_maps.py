@@ -21,7 +21,7 @@ def save_map(m, crot, wlen):
 
 
 def save_figure(m, crot, wlen):
-    fig = plt.figure(tight_layout=True)
+    fig = plt.figure()
     m.plot(cmap=f'sdoaia{wlen}', vmax=2000)
     # Plot formatting
     ax = plt.gca()
@@ -35,8 +35,7 @@ def save_figure(m, crot, wlen):
     ax.set_xlim(left=-0.49999)
     ax.grid(False)
     # Save plot
-    plt.savefig(output_dir / 'plots' / f'aia{wlen}_synoptic_{crot}.pdf',
-                bbox_inches='tight')
+    plt.savefig(output_dir / 'png' / f'aia{wlen}_synoptic_{crot}.png', dpi=200)
     plt.close('all')
 
 
@@ -63,4 +62,4 @@ if __name__ == '__main__':
         save_map(m, crot, wlen)
         save_figure(m, crot, wlen)
 
-        crot -= 1
+        crot += 1
