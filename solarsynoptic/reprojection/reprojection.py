@@ -11,7 +11,8 @@ from reproject import reproject_interp
 __all__ = ['reproject_carrington']
 
 
-def reproject_carrington(smap, shape_out, latitude_projection='CAR'):
+def reproject_carrington(smap, shape_out, latitude_projection='CAR',
+                         cache=True):
     """
     Reproject *smap* into a Carrington frame of reference.
 
@@ -27,12 +28,18 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR'):
     smap : sunpy.map.GenericMap
     shape_out : [int, int]
         Number of output pixels in (latitude, longitude).
+    cache : bool
 
     Returns
     -------
     carrington_map : sunpy.map.Genericmap
         Reprojected map.
     """
+    if cache:
+        from solarsynoptic.reprojection.database import DATABASE
+        if smap in DATABASE:
+            return DATABASE[smap]
+
     header_out = carrington_header(smap.date, shape_out,
                                    projection_code=latitude_projection)
     wcs_out = WCS(header_out)
@@ -42,6 +49,10 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR'):
     # Create a sunpy map, and copy over plot settings
     map_out = Map((array, header_out))
     map_out.plot_settings = smap.plot_settings
+
+    if cache:
+        from solarsynoptic.reprojection.database import save_and_cache
+        save_and_cache(smap, map_out)
     return map_out
 
 
