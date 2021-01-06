@@ -5,6 +5,11 @@ from sunpy.map import Map
 from sunpy.time import parse_time
 
 
+def start_of_day(dtime):
+    # Get datetime at start of current day
+    return datetime(dtime.year, dtime.month, dtime.day)
+
+
 def start_of_day_map(dtime, *query):
     """
     Download the first map available on a given date, with the given Fido query.
@@ -20,7 +25,7 @@ def start_of_day_map(dtime, *query):
     if dtime > datetime.now():
         raise RuntimeError("Can't fetch map in the future!")
     # Get datetime at start of current day
-    dtime = datetime(dtime.year, dtime.month, dtime.day)
+    dtime = start_of_day(dtime)
 
     query = (a.Time(dtime, dtime + timedelta(days=1), dtime), *query)
     result = Fido.search(*query)
