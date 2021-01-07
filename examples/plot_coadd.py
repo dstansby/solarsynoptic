@@ -23,7 +23,7 @@ shape_out = [180, 360]
 ###############################################################################
 # Download STEREO maps
 maps_in_stereo = []
-for i in range(16):
+for i in range(10):
     d = datetime.now() - timedelta(days=i)
     smap = stereo_start_of_day_map(d)
     # Normalise to AIA
@@ -35,7 +35,7 @@ for i in range(16):
 ###############################################################################
 # Download AIA maps
 maps_in_aia = []
-for i in range(18):
+for i in range(17):
     d = datetime.now() - timedelta(days=i)
     maps_in_aia.append(aia_start_of_day_map(d, 193 * u.Angstrom))
 
