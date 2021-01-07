@@ -19,7 +19,7 @@ def long_weights(width):
     def weights(smap):
         coord = sunpy.map.all_coordinates_from_map(smap)
         longs = coord.lon.to(u.deg).value
-        l0 = sunpy.coordinates.sun.L0(smap.date).to(u.deg).value
+        l0 = smap.observer_coordinate.transform_to(smap.coordinate_frame).lon.to_value(u.deg)
 
         dcenterlong = (longs - l0 + 180) % 360 - 180
         weights = np.exp(-(dcenterlong / width.to_value(u.deg))**2)
