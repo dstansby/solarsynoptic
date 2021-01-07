@@ -23,6 +23,10 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     The input map is reprojected into a map covering the full surface of the
     Sun, regardless of the extent of the input map.
 
+    *All* of the metadata in ``smap`` is copied to the output map, apart from
+    the new WCS information. The ``BLANK`` keyword is also removed if present,
+    as reprojection always results in floating point data.
+
     Parameters
     ----------
     smap : sunpy.map.GenericMap
@@ -46,9 +50,11 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     wcs_out.heliographic_observer = smap.observer_coordinate
     # Do the reprojection
     array, footprint = reproject_interp(smap, wcs_out, shape_out=shape_out)
-    # Create a sunpy map, and copy over plot settings
-    map_out = Map((array, header_out))
-    map_out.plot_settings = smap.plot_settings
+    # Copy the metadata, and override the WCS information
+    new_header = smap.meta.copy()
+    new_header.update(header_out)
+    new_header.pop('BLANK', None)
+    map_out = Map((array, new_header))
 
     if cache:
         from solarsynoptic.reprojection.database import save_and_cache
