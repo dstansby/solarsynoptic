@@ -5,6 +5,7 @@ import astropy.units as u
 from sunpy.map import Map
 from sunpy.net import attrs as a
 from sunpy.time import parse_time
+import sunpy.sun.constants
 
 from . import helpers
 # TODO: change this to get the sunpy directory from sunpy
@@ -51,7 +52,9 @@ def aia_start_of_day_map(dtime, wlen):
         mappath = pathlib.Path(res[0])
         mappath.replace(map_path(dtime, wlen))
 
-    return Map(map_path(dtime, wlen))
+    smap = Map(map_path(dtime, wlen))
+    smap.meta['rsun_ref'] = sunpy.sun.constants.radius.to_value(u.m)
+    return smap
 
 
 def map_path(dtime, wlen):
