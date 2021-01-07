@@ -5,7 +5,7 @@ from sunpy.map import Map
 
 from . import helpers
 # TODO: change this to get the sunpy directory from sunpy
-map_dir = pathlib.Path('/Users/dstansby/sunpy/data')
+map_dir = pathlib.Path('/Users/dstansby/sunpy/solarsynoptic/raw')
 
 
 __all__ = ['stereo_start_of_day_map']
