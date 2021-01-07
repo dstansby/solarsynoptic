@@ -32,13 +32,16 @@ def coadd(smaps, weight_function=None):
         else:
             weights = weight_function(smap)
             # Validate the weights
-            if weights.shape != out_shap:
+            if weights.shape != out_shape:
                 raise RuntimeError(
                     f'weight_function returned data shape {weights.shape}, '
                     f'but expected shape is {out_shape}')
             if np.any(~np.isfinite(weights)):
                 raise RuntimeError(
                     'weight_funciton returned at least one non-finite value')
+            if np.any(weights < 0):
+                raise RuntimeError(
+                    'weight_funciton returned at least one negative value')
 
         non_nan_mask = np.logical_or(non_nan_mask, ~np.isnan(smap.data))
         out_data += np.nan_to_num(smap.data) * weights
