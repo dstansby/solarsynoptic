@@ -50,24 +50,43 @@ def synoptic_map_path(dtime, wlen):
     return map_dir / f'aia_{wlen}_synoptic_{datestr}.fits'
 
 
+def download_nrt(dtime, wlen):
+    import parfive
+    dl = parfive.Downloader(max_conn=1)
+    url = (f"http://jsoc2.stanford.edu/data/aia/synoptic/nrt/"
+           f"{dtime.year}/{dtime.month:02}/{dtime.day:02}/"
+           f"H0000/AIA{dtime.year}{dtime.month:02}{dtime.day:02}_"
+           f"000000_0{wlen}.fits")
+    dl.enqueue_file(url, filename=map_path(dtime, wlen))
+    res = dl.download()
+    if len(res.errors):
+        print(res.errors)
+        raise RuntimeError('Download failed')
+    download_path = pathlib.Path(res[0])
+    shutil.move(download_path, map_path(dtime, wlen))
+
+
 def download_start_of_day_map(dtime, wlen):
     """
     Download the first map available on a given date, at a given wavelength.
     """
     if dtime > datetime.now():
         raise RuntimeError(f'No map available for {dtime}')
-    dtime = start_of_day(dtime)
-    print(f'Fetching map for {dtime}')
-    query = (a.Time(dtime, dtime + timedelta(days=1), dtime),
-             a.Instrument('AIA'),
-             a.Wavelength(wlen * u.Angstrom))
-    result = Fido.search(*query)
-    try:
-        download_path = Fido.fetch(result[0, 0])[0]
-    except IndexError as e:
-        raise RuntimeError(f'No map available for {dtime}')
-    download_path = pathlib.Path(download_path)
-    shutil.move(download_path, map_path(dtime, wlen))
+    elif dtime < datetime.now() - timedelta(days=7):
+        dtime = start_of_day(dtime)
+        print(f'Fetching map for {dtime}')
+        query = (a.Time(dtime, dtime + timedelta(days=1), dtime),
+                 a.Instrument('AIA'),
+                 a.Wavelength(wlen * u.Angstrom))
+        result = Fido.search(*query)
+        try:
+            download_path = Fido.fetch(result[0, 0])[0]
+        except IndexError as e:
+            raise ValueError(f'Failed to donwload map for {dtime}')
+        download_path = pathlib.Path(download_path)
+        shutil.move(download_path, map_path(dtime, wlen))
+    else:
+        download_nrt(dtime, wlen)
 
 
 def load_start_of_day_map(dtime, wlen):
@@ -176,7 +195,7 @@ def create_synoptic_map(endtime, wlen):
     shape = [720, 1440]
     data = np.zeros(shape)
     weight_sum = np.zeros(shape)
-    nmaps = 27
+    nmaps = 28
     recent_time = None
     for i in range(nmaps):
         dtime = endtime - timedelta(days=i)
@@ -225,7 +244,7 @@ def aia_fov(dtime):
 
 
 if __name__ == '__main__':
-    map = create_synoptic_map(datetime(2018, 11, 10), 193)
+    map = create_synoptic_map(datetime.now(), 193)
     # Norm the data
     # data = map.data
     # data = map.plot_settings['norm'](data)
@@ -233,3 +252,6 @@ if __name__ == '__main__':
     # map = Map((data, map.meta))
     datestr = datetime.now().strftime('%Y%m%d')
     map.save(f'aia193_synoptic_latest_{datestr}.fits')
+
+    map.plot()
+    plt.gcf().savefig(f'aia193_synoptic_latest_png_{datestr}.png')
