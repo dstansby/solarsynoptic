@@ -34,4 +34,4 @@ def start_of_day_map(dtime, *query):
     except IndexError as e:
         raise RuntimeError(f'No maps available for whole day on {dtime}')
 
-    return Map(download_path)
+    return download_path

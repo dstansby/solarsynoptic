@@ -28,9 +28,13 @@ def aia_start_of_day_map(dtime, wlen):
 
     # Download from JSOC if older than 14 days; otherwise directly
     # get an NRT map
-    if (dtime < datetime.now() - timedelta(days=13)):
+    if map_path(dtime, wlen).exists():
+        pass
+    elif (dtime < datetime.now() - timedelta(days=13)):
         query = a.Instrument('AIA'), a.Wavelength(wlen)
-        return helpers.start_of_day_map(dtime, *query)
+        mappath = helpers.start_of_day_map(dtime, *query)
+        mappath = pathlib.Path(mappath)
+        mappath.replace(map_path(dtime, wlen))
     else:
         import parfive
         dl = parfive.Downloader(max_conn=1)
@@ -44,9 +48,13 @@ def aia_start_of_day_map(dtime, wlen):
         if len(res.errors):
             print(res.errors)
             raise RuntimeError('Download failed')
-        return Map(map_path(dtime, wlen))
+        mappath = pathlib.Path(res[0])
+        mappath.replace(map_path(dtime, wlen))
+
+    return Map(map_path(dtime, wlen))
 
 
 def map_path(dtime, wlen):
     datestr = dtime.strftime('%Y%m%d')
+    wlen = int(wlen.to_value(u.Angstrom))
     return map_dir / f'aia_{wlen}_nrt_{datestr}.fits'

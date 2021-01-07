@@ -4,6 +4,8 @@ AIA Carrington map
 """
 ###############################################################################
 # Import required functions
+from datetime import datetime, timedelta
+
 import astropy.units as u
 import matplotlib.pyplot as plt
 
@@ -19,12 +21,13 @@ shape_out = [180, 360]
 # Fetch a single AIA map. This will download the first map observed on the
 # given day.
 maps_in = []
-for i in range(1, 5):
-    maps_in.append(aia_start_of_day_map(f'2021-01-0{i}', 193 * u.Angstrom))
+for i in range(24):
+    d = datetime.now() - timedelta(days=i)
+    maps_in.append(aia_start_of_day_map(d, 193 * u.Angstrom))
 
 ###############################################################################
 # Reproject the maps into a Carrington frame of reference
-maps_in = [reproject_carrington(map_in, shape_out) for map_in in maps_in]
+maps_in = [reproject_carrington(map_in, shape_out, latitude_projection='CEA') for map_in in maps_in]
 
 ###############################################################################
 # Add the maps together
