@@ -4,6 +4,7 @@ import pathlib
 import astropy.units as u
 from sunpy.map import Map
 from sunpy.net import attrs as a
+from sunpy.time import parse_time
 
 from . import helpers
 # TODO: change this to get the sunpy directory from sunpy
@@ -22,6 +23,7 @@ def aia_start_of_day_map(dtime, wlen):
     wlen : astropy.units.Quantity
         Wavelength of interest.
     """
+    dtime = parse_time(dtime).to_datetime()
     dtime = helpers.start_of_day(dtime)
 
     # Download from JSOC if older than 14 days; otherwise directly
