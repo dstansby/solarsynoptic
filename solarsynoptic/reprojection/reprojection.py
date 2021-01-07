@@ -45,6 +45,7 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
             return DATABASE[smap]
 
     header_out = carrington_header(smap.date, shape_out,
+                                   smap.observer_coordinate,
                                    projection_code=latitude_projection)
     wcs_out = WCS(header_out)
     wcs_out.heliographic_observer = smap.observer_coordinate
@@ -68,7 +69,7 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     return map_out
 
 
-def carrington_header(dtime, shape_out, projection_code='CAR'):
+def carrington_header(dtime, shape_out, observer, projection_code='CAR'):
     """
     Construct a FITS header for a Carrington coordinate frame.
 
@@ -87,7 +88,7 @@ def carrington_header(dtime, shape_out, projection_code='CAR'):
     frame_out = SkyCoord(0, 0, unit=u.deg,
                          frame="heliographic_carrington",
                          obstime=dtime,
-                         observer='earth')
+                         observer=observer)
     header = make_fitswcs_header(
         shape_out, frame_out,
         scale=[180 / shape_out[0],
