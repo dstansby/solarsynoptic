@@ -38,11 +38,11 @@ def aia_start_of_day_map(dtime, wlen):
     else:
         import parfive
         dl = parfive.Downloader(max_conn=1)
-        wlen = int(wlen.to_value(u.Angstrom))
+        wlen_int = int(wlen.to_value(u.Angstrom))
         url = (f"http://jsoc2.stanford.edu/data/aia/synoptic/nrt/"
                f"{dtime.year}/{dtime.month:02}/{dtime.day:02}/"
                f"H0000/AIA{dtime.year}{dtime.month:02}{dtime.day:02}_"
-               f"000000_0{wlen}.fits")
+               f"000000_0{wlen_int}.fits")
         dl.enqueue_file(url, filename=map_path(dtime, wlen))
         res = dl.download()
         if len(res.errors):
