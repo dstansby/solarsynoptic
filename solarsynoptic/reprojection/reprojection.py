@@ -51,10 +51,16 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     # Do the reprojection
     array, footprint = reproject_interp(smap, wcs_out, shape_out=shape_out)
     # Copy the metadata, and override the WCS information
-    new_header = smap.meta.copy()
-    new_header.update(header_out)
-    new_header.pop('BLANK', None)
-    map_out = Map((array, new_header))
+    # new_header = smap.meta.copy()
+    # new_header.pop('CROTA')
+    # new_header.update(header_out)
+    # new_header.pop('BLANK', None)
+    header_out['wavelnth'] = smap.meta.get('wavelnth', '')
+    header_out['waveunit'] = smap.meta.get('waveunit', '')
+    header_out['detector'] = smap.meta.get('detector', '')
+    header_out['obsrvtry'] = smap.meta.get('obsrvtry', '')
+    header_out['telescop'] = smap.meta.get('telescop', '')
+    map_out = Map((array, header_out))
 
     if cache:
         from solarsynoptic.reprojection.database import save_and_cache
