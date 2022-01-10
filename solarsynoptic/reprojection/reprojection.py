@@ -19,21 +19,15 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
 
     This is done using the `reproject.reproject_interp` function.
 
-    Notes
-    -----
-    The input map is reprojected into a map covering the full surface of the
-    Sun, regardless of the extent of the input map.
-
-    *All* of the metadata in ``smap`` is copied to the output map, apart from
-    the new WCS information. The ``BLANK`` keyword is also removed if present,
-    as reprojection always results in floating point data.
-
     Parameters
     ----------
     smap : sunpy.map.GenericMap
     shape_out : [int, int]
         Number of output pixels in (latitude, longitude).
     cache : bool
+        If `True` (default) use the built in cache. This will save a copy
+        of the reprojected map, and load the map if this function is called
+        with the same map.
 
     Returns
     -------

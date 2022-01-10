@@ -15,10 +15,20 @@ solarsynoptic breaks these tasks down into three sub-modules:
 
 Fetching data
 -------------
-``solarsynoptic.data`` contains a couple of helper functions for downloading
+`solarsynoptic.data` contains a couple of helper functions for downloading
 AIA and STEREO maps from the beginning of a given day. For recent dates they
 automatically handle getting a near-real-time image when a final archived
 image isn't yet available.
 
 .. automodapi:: solarsynoptic.data
+   :no-heading:
+
+Reprojecting data
+-----------------
+`solarsynoptic.reprojection` contains a single function to reproject maps into
+a Carrington coordinate frame. Under the hood it can also cache the reprojected
+map to a file on disk, which avoids having to run the reprojection routine
+each time the reprojected map is requested.
+
+.. automodapi:: solarsynoptic.reprojection
    :no-heading:
