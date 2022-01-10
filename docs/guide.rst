@@ -16,7 +16,9 @@ solarsynoptic breaks these tasks down into three sub-modules:
 Fetching data
 -------------
 ``solarsynoptic.data`` contains a couple of helper functions for downloading
-AIA and STEREO maps from the beginning of a given day:
+AIA and STEREO maps from the beginning of a given day. For recent dates they
+automatically handle getting a near-real-time image when a final archived
+image isn't yet available.
 
 .. automodapi:: solarsynoptic.data
    :no-heading:
