@@ -1,14 +1,13 @@
 """
 Tools for reprojecting maps.
 """
-from astropy.coordinates import SkyCoord
 import astropy.units as u
-from astropy.wcs import WCS
 import numpy as np
-import sunpy.coordinates
-from sunpy.map import Map, make_fitswcs_header
+from astropy.coordinates import SkyCoord
+from astropy.wcs import WCS
 from reproject import reproject_interp
 from sunpy import log
+from sunpy.map import Map, make_fitswcs_header
 
 __all__ = ['reproject_carrington']
 

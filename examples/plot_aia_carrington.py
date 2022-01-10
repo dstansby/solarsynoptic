@@ -6,10 +6,11 @@ AIA Carrington map
 # Import required functions
 import astropy.units as u
 import matplotlib.pyplot as plt
+from astropy.time import Time
 
 from solarsynoptic.data import aia_start_of_day_map
 from solarsynoptic.reprojection import reproject_carrington
-from astropy.time import Time
+
 ###############################################################################
 # Define the output of the shape map. This is number of pixels in latitude and
 # longitude.
