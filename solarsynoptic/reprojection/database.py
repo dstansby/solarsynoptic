@@ -122,7 +122,7 @@ def save_and_cache(original_map, reprojected_map):
     reprojected_fname = (construct_fname(original_map) +
                          f'_reprojected_{ctype}.fits')
     reprojected_file_path = DATABASE.directory / 'data' / reprojected_fname
-    reprojected_map.save(reprojected_file_path)
+    reprojected_map.save(reprojected_file_path, overwrite=True)
 
     # Add to database
     DATABASE.insert(original_map, reprojected_map, reprojected_file_path)
