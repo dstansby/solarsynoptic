@@ -1,13 +1,13 @@
-from datetime import timedelta
 import pathlib
+from datetime import timedelta
 
 import astropy.units as u
 from parfive import Downloader
 from sunpy.map import Map
-from sunpy.net import attrs as a, Fido
 from sunpy.time import TimeRange
 
 from . import helpers
+
 # TODO: change this to get the sunpy directory from sunpy
 map_dir = pathlib.Path('/Users/dstansby/sunpy/solarsynoptic/raw')
 

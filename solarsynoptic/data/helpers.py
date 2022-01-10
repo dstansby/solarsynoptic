@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
-from sunpy.net import Fido, attrs as a
-from sunpy.map import Map
+from sunpy.net import Fido
+from sunpy.net import attrs as a
 from sunpy.time import parse_time
 
 
@@ -31,7 +31,7 @@ def start_of_day_map(dtime, *query):
     result = Fido.search(*query)
     try:
         download_path = Fido.fetch(result[0, 0])[0]
-    except IndexError as e:
+    except IndexError:
         raise RuntimeError(f'No maps available for whole day on {dtime}')
 
     return download_path

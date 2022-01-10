@@ -1,6 +1,5 @@
-import pytest
-
 import astropy.units as u
+import pytest
 from astropy.time import Time
 from sunpy.map.sources import AIAMap
 
