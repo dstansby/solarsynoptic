@@ -10,3 +10,7 @@
 docs/_build
 docs/api
 docs/auto_examples
+
+figs/*
+maps/*
+*.png
