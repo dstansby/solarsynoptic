@@ -3,10 +3,10 @@ import numpy as np
 import sunpy.coordinates.sun
 import sunpy.map
 
-__all__ = ['long_weights']
+__all__ = ['weights_longitude']
 
 
-def long_weights(width):
+def weights_longitude(width):
     """
     Weights to use when adding synoptic maps.
 

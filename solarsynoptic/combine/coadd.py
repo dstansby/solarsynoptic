@@ -7,14 +7,14 @@ def coadd(smaps, weight_function=None):
     Add a set of full Sun maps together.
 
     This is helpful for taking several observations, and adding them together
-    to increase coverage of the Sun.
+    to increase coverage of the whole sphere.
 
     Parameters
     ----------
-    smaps : list[sunpy.map.GenericMap]
+    smaps : list[`sunpy.map.GenericMap`]
     weight_function : callable
-        A function that takes a single `~sunpy.map.GenericMap` as input, and
-        returns an array of weights that is the same shape as the input map.
+        A function that takes a single :class:`~sunpy.map.GenericMap` as input,
+        and returns an array of weights that is the same shape as the input map.
     """
     smaps = sunpy.map.MapSequence(*smaps)
     if not smaps.all_maps_same_shape():

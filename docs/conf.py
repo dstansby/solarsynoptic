@@ -64,6 +64,8 @@ nitpicky = True
 
 intersphinx_mapping = {'python': ('https://docs.python.org/3', None),
                        'astropy': ('https://docs.astropy.org/en/stable/', None),
+                       'reproject': ('https://reproject.readthedocs.io/en/stable', None),
+                       'sunpy': ('https://docs.sunpy.org/en/stable/', None),
                        }
 
 default_role = 'any'
