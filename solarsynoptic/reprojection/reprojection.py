@@ -5,6 +5,7 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 from astropy.wcs import WCS
 import numpy as np
+import sunpy.coordinates
 from sunpy.map import Map, make_fitswcs_header
 from reproject import reproject_interp
 
@@ -48,20 +49,16 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
                                    smap.observer_coordinate,
                                    projection_code=latitude_projection)
     wcs_out = WCS(header_out)
-    wcs_out.heliographic_observer = smap.observer_coordinate
     # Do the reprojection
     array, footprint = reproject_interp(smap, wcs_out, shape_out=shape_out)
-    # Copy the metadata, and override the WCS information
-    # new_header = smap.meta.copy()
-    # new_header.pop('CROTA')
-    # new_header.update(header_out)
-    # new_header.pop('BLANK', None)
+    # Copy some metadata over
     header_out['wavelnth'] = smap.meta.get('wavelnth', '')
     header_out['waveunit'] = smap.meta.get('waveunit', '')
     header_out['detector'] = smap.meta.get('detector', '')
     header_out['obsrvtry'] = smap.meta.get('obsrvtry', '')
     header_out['telescop'] = smap.meta.get('telescop', '')
     map_out = Map((array, header_out))
+    map_out.plot_settings = smap.plot_settings
 
     if cache:
         from solarsynoptic.reprojection.database import save_and_cache
