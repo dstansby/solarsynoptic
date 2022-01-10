@@ -80,32 +80,32 @@ class _DataBase:
         """
         self.db.to_csv(self.db_fpath)
 
-    def insert(self, original_map, reprojected_map, reprojected_filepath):
+    def insert(self, original_map, projection,
+               reprojected_map, reprojected_filepath):
         # Add entry to database
-        original_meta_hash = item_hash(original_map)
+        original_meta_hash = self.key(original_map, projection)
         reprojected_meta_hash = item_hash(reprojected_map)
         self.db.loc[original_meta_hash] = [reprojected_meta_hash,
                                            str(reprojected_filepath)]
         self.save_db()
 
     def __contains__(self, item):
-        if not isinstance(item, sunpy.map.GenericMap):
-            raise TypeError('Can only get GenericMap objects')
-
-        return item_hash(item) in self.db.index
+        return self.key(*item) in self.db.index
 
     def __getitem__(self, item):
-        if not isinstance(item, sunpy.map.GenericMap):
-            raise TypeError('Can only get GenericMap objects')
-
-        fpath = self.db.loc[item_hash(item), 'Reprojected file path']
+        fpath = self.db.loc[self.key(*item), 'Reprojected file path']
         return sunpy.map.Map(fpath)
+
+    @staticmethod
+    def key(smap, projection):
+        # Return database key for a given map and output projection
+        return item_hash(smap) + projection
 
 
 DATABASE = _DataBase()
 
 
-def save_and_cache(original_map, reprojected_map):
+def save_and_cache(original_map, projection, reprojected_map):
     """
     Save ``reprojected_map`` to a .FITS file, and insert an entry into the
     solarsynoptic database.
@@ -125,7 +125,8 @@ def save_and_cache(original_map, reprojected_map):
     reprojected_map.save(reprojected_file_path, overwrite=True)
 
     # Add to database
-    DATABASE.insert(original_map, reprojected_map, reprojected_file_path)
+    DATABASE.insert(original_map, projection,
+                    reprojected_map, reprojected_file_path)
 
 
 def construct_fname(smap):

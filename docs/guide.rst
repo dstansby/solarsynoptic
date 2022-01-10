@@ -26,9 +26,14 @@ image isn't yet available.
 Reprojecting data
 -----------------
 `solarsynoptic.reprojection` contains a single function to reproject maps into
-a Carrington coordinate frame. Under the hood it can also cache the reprojected
-map to a file on disk, which avoids having to run the reprojection routine
-each time the reprojected map is requested.
+a Carrington coordinate frame.
 
 .. automodapi:: solarsynoptic.reprojection
    :no-heading:
+
+Caching reprojected maps
+~~~~~~~~~~~~~~~~~~~~~~~~
+Under the hood ``solarsynoptic`` can cache the reprojected map to a file on
+disk, which avoids having to run the reprojection routine each time the
+reprojected map is requested. This is enabled by default, and can be disabled
+by passing ``cache=False`` to ``reproject_carrington``.

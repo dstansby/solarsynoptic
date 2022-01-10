@@ -23,3 +23,6 @@ def test_reprojection(cache, latitude_projection):
     ll_coord = car_map.pixel_to_world(*(-0.5, -0.5) * u.pix)
     assert u.allclose(ll_coord.lon, Longitude(-180 * u.deg))
     assert u.allclose(ll_coord.lat, -90 * u.deg)
+
+    assert car_map.meta['CTYPE1'][5:] == latitude_projection
+    assert car_map.meta['CTYPE2'][5:] == latitude_projection

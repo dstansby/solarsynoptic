@@ -8,6 +8,7 @@ import numpy as np
 import sunpy.coordinates
 from sunpy.map import Map, make_fitswcs_header
 from reproject import reproject_interp
+from sunpy import log
 
 __all__ = ['reproject_carrington']
 
@@ -36,8 +37,9 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     """
     if cache:
         from solarsynoptic.reprojection.database import DATABASE
-        if smap in DATABASE:
-            return DATABASE[smap]
+        if (smap, latitude_projection) in DATABASE:
+            log.info(f'Fetching reprojected {smap.name} from database')
+            return DATABASE[smap, latitude_projection]
 
     header_out = carrington_header(smap.date, shape_out,
                                    smap.observer_coordinate,
@@ -56,7 +58,7 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
 
     if cache:
         from solarsynoptic.reprojection.database import save_and_cache
-        save_and_cache(smap, map_out)
+        save_and_cache(smap, latitude_projection, map_out)
     return map_out
 
 
