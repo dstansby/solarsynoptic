@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 from solarsynoptic.data import aia_start_of_day_map
 from solarsynoptic.reprojection import reproject_carrington
-
+from astropy.time import Time
 ###############################################################################
 # Define the output of the shape map. This is number of pixels in latitude and
 # longitude.
@@ -17,7 +17,7 @@ shape_out = [180, 360]
 ###############################################################################
 # Fetch a single AIA map. This will download the first map observed on the
 # given day.
-map_in = aia_start_of_day_map('2020-01-01', 193 * u.Angstrom)
+map_in = aia_start_of_day_map(Time.now(), 193 * u.Angstrom)
 
 ###############################################################################
 # Reproject the map into a Carrington frame of reference, and show the result.
