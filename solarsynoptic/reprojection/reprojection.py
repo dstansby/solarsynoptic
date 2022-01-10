@@ -35,30 +35,34 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     carrington_map : sunpy.map.Genericmap
         Reprojected map.
     """
+    map_out = None
     if cache:
         from solarsynoptic.reprojection.database import DATABASE
         if (smap, latitude_projection) in DATABASE:
             log.info(f'Fetching reprojected {smap.name} from database')
-            return DATABASE[smap, latitude_projection]
+            map_out = DATABASE[smap, latitude_projection]
 
-    header_out = carrington_header(smap.date, shape_out,
-                                   smap.observer_coordinate,
-                                   projection_code=latitude_projection)
-    wcs_out = WCS(header_out)
-    # Do the reprojection
-    array, footprint = reproject_interp(smap, wcs_out, shape_out=shape_out)
-    # Copy some metadata over
-    header_out['wavelnth'] = smap.meta.get('wavelnth', '')
-    header_out['waveunit'] = smap.meta.get('waveunit', '')
-    header_out['detector'] = smap.meta.get('detector', '')
-    header_out['obsrvtry'] = smap.meta.get('obsrvtry', '')
-    header_out['telescop'] = smap.meta.get('telescop', '')
-    map_out = Map((array, header_out))
+    if map_out is None:
+        header_out = carrington_header(smap.date, shape_out,
+                                       smap.observer_coordinate,
+                                       projection_code=latitude_projection)
+        wcs_out = WCS(header_out)
+        # Do the reprojection
+        array, footprint = reproject_interp(smap, wcs_out, shape_out=shape_out)
+        # Copy some metadata over
+        header_out['wavelnth'] = smap.meta.get('wavelnth', '')
+        header_out['waveunit'] = smap.meta.get('waveunit', '')
+        header_out['detector'] = smap.meta.get('detector', '')
+        header_out['obsrvtry'] = smap.meta.get('obsrvtry', '')
+        header_out['telescop'] = smap.meta.get('telescop', '')
+        header_out['instrume'] = smap.meta.get('instrume', '')
+        map_out = Map((array, header_out))
+
+        if cache:
+            from solarsynoptic.reprojection.database import save_and_cache
+            save_and_cache(smap, latitude_projection, map_out)
+
     map_out.plot_settings = smap.plot_settings
-
-    if cache:
-        from solarsynoptic.reprojection.database import save_and_cache
-        save_and_cache(smap, latitude_projection, map_out)
     return map_out
 
 

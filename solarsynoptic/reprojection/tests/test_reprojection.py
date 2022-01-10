@@ -26,3 +26,5 @@ def test_reprojection(cache, latitude_projection):
 
     assert car_map.meta['CTYPE1'][5:] == latitude_projection
     assert car_map.meta['CTYPE2'][5:] == latitude_projection
+
+    assert car_map.plot_settings == smap.plot_settings
