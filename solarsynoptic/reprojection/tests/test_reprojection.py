@@ -1,7 +1,6 @@
-import pytest
-
-from astropy.coordinates import Longitude
 import astropy.units as u
+import pytest
+from astropy.coordinates import Longitude
 from astropy.time import Time
 from sunpy.map import GenericMap
 

@@ -1,13 +1,12 @@
-from datetime import datetime, timedelta
 import pathlib
+from datetime import datetime, timedelta
 
 import astropy.units as u
+from sunpy import config as sunpy_config
+from sunpy import log
 from sunpy.map import Map
 from sunpy.net import attrs as a
 from sunpy.time import parse_time
-import sunpy.sun.constants
-from sunpy import config as sunpy_config
-from sunpy import log
 
 from . import helpers
 

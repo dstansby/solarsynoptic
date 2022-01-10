@@ -3,11 +3,11 @@ from pathlib import Path
 
 import matplotlib.pyplot as plt
 from sunpy.coordinates.sun import carrington_rotation_time
-from sunpy.map import Map
-# Register sunpy colourmaps
-import sunpy.visualization.colormaps
 
 from aia_helpers import create_synoptic_map
+
+# Register sunpy colourmaps
+
 
 # The directory to save fits files and figures to
 output_dir = Path('/Volumes/Work/Data/synoptic_aia/synoptic_fits')
@@ -21,7 +21,7 @@ def save_map(m, crot, wlen):
 
 
 def save_figure(m, crot, wlen):
-    fig = plt.figure()
+    plt.figure()
     m.plot(cmap=f'sdoaia{wlen}', vmax=2000)
     # Plot formatting
     ax = plt.gca()
