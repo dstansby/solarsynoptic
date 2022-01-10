@@ -6,58 +6,87 @@ from sunpy.map import Map
 from sunpy.net import attrs as a
 from sunpy.time import parse_time
 import sunpy.sun.constants
+from sunpy import config as sunpy_config
+from sunpy import log
 
 from . import helpers
-# TODO: change this to get the sunpy directory from sunpy
-map_dir = pathlib.Path('/Users/dstansby/sunpy/solarsynoptic/raw')
 
 __all__ = ['aia_start_of_day_map']
 
 
-def aia_start_of_day_map(dtime, wlen):
+def aia_start_of_day_map(dtime, wlen, dl_path=None):
     """
-    Download the first AIA map available on a given date, at a given wavelength.
+    Download and load the first AIA map available on a given date at a given
+    wavelength.
+
+    By default files are downloaded to the sunpy download directory.
 
     Parameters
     ----------
-    dtime
+    dtime : astropy.time.Time
     wlen : astropy.units.Quantity
-        Wavelength of interest.
+    dl_path : str, pathlib.Path
+        Directory to search for files and download files to. If `None` defaults
+        to the sunpy download directory.
+
+    Returns
+    -------
+    sunpy.map.AIAMap
+
+    Notes
+    -----
+    For dates more than 14 days in the future calibrated L0 maps are
+    downloaded. For dates more recent than that a near-real-time file is
+    downloaded.
     """
     dtime = parse_time(dtime).to_datetime()
     dtime = helpers.start_of_day(dtime)
+    if dl_path is None:
+        dl_path = sunpy_config.get('downloads', 'download_dir')
+    dl_path = pathlib.Path(dl_path)
 
     # Download from JSOC if older than 14 days; otherwise directly
     # get an NRT map
-    if map_path(dtime, wlen).exists():
-        pass
-    elif (dtime < datetime.now() - timedelta(days=13)):
-        query = a.Instrument('AIA'), a.Wavelength(wlen)
-        mappath = helpers.start_of_day_map(dtime, *query)
-        mappath = pathlib.Path(mappath)
-        mappath.replace(map_path(dtime, wlen))
+    if (dtime < datetime.now() - timedelta(days=13)):
+        map_path = _map_path(dtime, wlen, dl_path)
+        if not map_path.exists():
+            query = a.Instrument('AIA'), a.Wavelength(wlen)
+            log.info(f'Downloading AIA {int(wlen.to_value(u.Angstrom))} map '
+                     f'to {map_path}')
+            dl_path = helpers.start_of_day_map(dtime, *query)
+            dl_path = pathlib.Path(dl_path)
+            dl_path.replace(map_path)
     else:
-        import parfive
-        dl = parfive.Downloader(max_conn=1)
-        wlen_int = int(wlen.to_value(u.Angstrom))
-        url = (f"http://jsoc2.stanford.edu/data/aia/synoptic/nrt/"
-               f"{dtime.year}/{dtime.month:02}/{dtime.day:02}/"
-               f"H0000/AIA{dtime.year}{dtime.month:02}{dtime.day:02}_"
-               f"000000_0{wlen_int}.fits")
-        dl.enqueue_file(url, filename=map_path(dtime, wlen))
-        res = dl.download()
-        if len(res.errors):
-            print(res.errors)
-            raise RuntimeError('Download failed')
-        mappath = pathlib.Path(res[0])
-        mappath.replace(map_path(dtime, wlen))
+        map_path = _nrt_map_path(dtime, wlen, dl_path)
+        if not map_path.exists():
+            import parfive
+            dl = parfive.Downloader(max_conn=1)
+            wlen_int = int(wlen.to_value(u.Angstrom))
+            url = (f"http://jsoc2.stanford.edu/data/aia/synoptic/nrt/"
+                   f"{dtime.year}/{dtime.month:02}/{dtime.day:02}/"
+                   f"H0000/AIA{dtime.year}{dtime.month:02}{dtime.day:02}_"
+                   f"000000_0{wlen_int}.fits")
+            dl.enqueue_file(url, filename=map_path)
+            log.info(f'Downloading AIA {int(wlen.to_value(u.Angstrom))} map '
+                     f'to {map_path}')
+            res = dl.download()
+            if len(res.errors):
+                log.info(res.errors)
+                raise RuntimeError('Download failed')
+            dl_path = pathlib.Path(res[0])
+            dl_path.replace(map_path)
 
-    smap = Map(map_path(dtime, wlen))
-    smap.meta['rsun_ref'] = sunpy.sun.constants.radius.to_value(u.m)
+    smap = Map(map_path)
     return smap
 
 
-def map_path(dtime, wlen):
+def _map_path(dtime, wlen, directory):
     datestr = dtime.strftime('%Y%m%d')
     wlen = int(wlen.to_value(u.Angstrom))
-    return map_dir / f'aia_{wlen}_nrt_{datestr}.fits'
+    return directory / f'aia_{wlen}_{datestr}.fits'
+
+
+def _nrt_map_path(dtime, wlen, directory):
+    datestr = dtime.strftime('%Y%m%d')
+    wlen = int(wlen.to_value(u.Angstrom))
+    return directory / f'aia_{wlen}_{datestr}_nrt.fits'
