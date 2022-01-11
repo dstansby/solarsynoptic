@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sunpy.map
 
-from solarsynoptic.coadd import coadd, long_weights
+from solarsynoptic.combine import coadd, weights_longitude
 from solarsynoptic.data import aia_start_of_day_map, stereo_start_of_day_map
 from solarsynoptic.reprojection import reproject_carrington
 
@@ -51,7 +51,7 @@ maps_in_aia = [reproject_carrington(map_in, shape_out) for map_in in maps_in_aia
 
 
 def weight_function(smap):
-    weights = long_weights(30 * u.deg)(smap)
+    weights = weights_longitude(30 * u.deg)(smap)
     factor = (datetime.now() - smap.date.to_datetime()) / timedelta(days=1)
     return weights / factor
 
@@ -59,25 +59,27 @@ def weight_function(smap):
 ###############################################################################
 # Add the maps together
 dtime = datetime.now().strftime('%Y-%m-%d')
+
+# Just the STEREO maps
 map_out = coadd(maps_in_stereo, weight_function=weight_function)
 fig = plt.figure()
 map_out.plot(cmap='sdoaia193', norm=norm)
 plt.gca().set_title(f'EUVI, updated {dtime}')
-fig.savefig(f'figs/euvi_png_{dtime}.png')
 
+# Just tthe AIA maps
 map_out = coadd(maps_in_aia, weight_function=weight_function)
 fig = plt.figure()
 map_out.plot(cmap='sdoaia193', norm=norm)
 map_out.save(f'maps/aia_synoptic_{dtime}.fits')
 plt.gca().set_title(f'AIA, updated {dtime}')
-fig.savefig(f'figs/aia_png_{dtime}.png')
 
+# STEREO and AIA maps
 map_out = coadd(maps_in_aia + maps_in_stereo, weight_function=weight_function)
+map_out.save(f'maps/aia_euvi_synoptic_{dtime}.fits', overwrite=True)
+
 fig = plt.figure()
 map_out = sunpy.map.Map((norm(map_out.data), map_out.meta))
 map_out.plot(cmap='sdoaia193', norm=mcolor.Normalize(vmin=0, vmax=1))
 plt.gca().set_title(f'AIA + EUVI, udpated {dtime}')
 
-fig.savefig(f'figs/combined_png_{dtime}.png')
-fig.savefig(f'maps/aia_euvi_synoptic_png_{dtime}.png')
-map_out.save(f'maps/aia_euvi_synoptic_{dtime}.fits')
+plt.show()

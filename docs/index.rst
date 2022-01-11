@@ -47,7 +47,9 @@ Caching reprojected maps
 Under the hood ``solarsynoptic`` can cache the reprojected map to a file on
 disk, which avoids having to run the reprojection routine each time the
 reprojected map is requested. This is enabled by default, and can be disabled
-by passing ``cache=False`` to ``reproject_carrington``.
+by passing ``cache=False`` to ``reproject_carrington``. The cached maps are
+saved in a folder named ``solarsynoptic`` that is placed next to the ``sunpy``
+data directory.
 
 Combining multiple maps
 -----------------------

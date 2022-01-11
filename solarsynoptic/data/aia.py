@@ -66,8 +66,8 @@ def aia_start_of_day_map(dtime, wlen, dl_path=None):
                    f"H0000/AIA{dtime.year}{dtime.month:02}{dtime.day:02}_"
                    f"000000_0{wlen_int}.fits")
             dl.enqueue_file(url, filename=map_path)
-            log.info(f'Downloading AIA {int(wlen.to_value(u.Angstrom))} map '
-                     f'to {map_path}')
+            log.info(f'Downloading AIA {int(wlen.to_value(u.Angstrom))} '
+                     f'near real time map to {map_path}')
             res = dl.download()
             if len(res.errors):
                 log.info(res.errors)

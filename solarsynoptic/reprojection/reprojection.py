@@ -42,6 +42,7 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
             map_out = DATABASE[smap, latitude_projection]
 
     if map_out is None:
+        log.info(f'Reprojecting {smap.name}')
         header_out = carrington_header(smap.date, shape_out,
                                        smap.observer_coordinate,
                                        projection_code=latitude_projection)

@@ -94,7 +94,8 @@ class _DataBase:
 
     def __getitem__(self, item):
         fpath = self.db.loc[self.key(*item), 'Reprojected file path']
-        return sunpy.map.Map(fpath)
+        if Path(fpath).exists():
+            return sunpy.map.Map(fpath)
 
     @staticmethod
     def key(smap, projection):
