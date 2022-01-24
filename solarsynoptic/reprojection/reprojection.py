@@ -6,6 +6,7 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 from reproject import reproject_interp
+from sunpy.sun import constants
 from sunpy import log
 from sunpy.map import Map, make_fitswcs_header
 
@@ -34,6 +35,14 @@ def reproject_carrington(smap, shape_out, latitude_projection='CAR',
     carrington_map : sunpy.map.Genericmap
         Reprojected map.
     """
+    rsun_m = constants.radius.to_value(u.m)
+    if 'rsun_ref' not in smap.meta:
+        log.info('Setting rsun_ref in metadata')
+        smap.meta['rsun_ref'] = rsun_m
+    elif smap.meta['rsun_ref'] != rsun_m:
+        log.info('Overwriting rsun_ref with standard photospheric radius')
+        smap.meta['rsun_ref'] = rsun_m
+
     map_out = None
     if cache:
         from solarsynoptic.reprojection.database import DATABASE
