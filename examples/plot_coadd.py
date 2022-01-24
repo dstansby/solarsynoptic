@@ -64,18 +64,19 @@ dtime = datetime.now().strftime('%Y-%m-%d')
 map_out = coadd(maps_in_stereo, weight_function=weight_function)
 fig = plt.figure()
 map_out.plot(cmap='sdoaia193', norm=norm)
+map_out.save(f'stereo_synoptic_{dtime}.fits')
 plt.gca().set_title(f'EUVI, updated {dtime}')
 
 # Just tthe AIA maps
 map_out = coadd(maps_in_aia, weight_function=weight_function)
 fig = plt.figure()
 map_out.plot(cmap='sdoaia193', norm=norm)
-map_out.save(f'maps/aia_synoptic_{dtime}.fits')
+map_out.save(f'aia_synoptic_{dtime}.fits')
 plt.gca().set_title(f'AIA, updated {dtime}')
 
 # STEREO and AIA maps
 map_out = coadd(maps_in_aia + maps_in_stereo, weight_function=weight_function)
-map_out.save(f'maps/aia_euvi_synoptic_{dtime}.fits', overwrite=True)
+map_out.save(f'aia_euvi_synoptic_{dtime}.fits', overwrite=True)
 
 fig = plt.figure()
 map_out = sunpy.map.Map((norm(map_out.data), map_out.meta))
