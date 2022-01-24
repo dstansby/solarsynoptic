@@ -98,6 +98,8 @@ def stereo_start_of_day_map(dtime, wlen=195 * u.Angstrom, dl_path=None):
             map_path = _stereo_map_path(dtime, dl_path, wlen, beacon='_beacon')
             if not map_path.exists():
                 dl_path = stereo_beacon_start_of_day(dtime, dl_path, wlen)
+            else:
+                dl_path = map_path
 
         dl_path.replace(map_path)
     return Map(map_path)

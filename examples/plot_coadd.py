@@ -25,7 +25,7 @@ shape_out = [720, 1440]
 # Download STEREO maps
 maps_in_stereo = []
 for i in range(10):
-    d = datetime.now() - timedelta(days=i)
+    d = datetime.now() - timedelta(days=i) - timedelta(days=2)
     smap = stereo_start_of_day_map(d)
     # Normalise to AIA
     data = (smap.data - 720.0) * 110 / 170
@@ -37,7 +37,7 @@ for i in range(10):
 # Download AIA maps
 maps_in_aia = []
 for i in range(17):
-    d = datetime.now() - timedelta(days=i)
+    d = datetime.now() - timedelta(days=i) - timedelta(days=2)
     maps_in_aia.append(aia_start_of_day_map(d, 193 * u.Angstrom))
 
 norm = maps_in_aia[0].plot_settings['norm']
