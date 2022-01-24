@@ -90,16 +90,17 @@ def stereo_start_of_day_map(dtime, wlen=195 * u.Angstrom, dl_path=None):
     dl_path = Path(dl_path)
 
     map_path = _stereo_map_path(dtime, dl_path, wlen)
-    if not map_path.exists():
-        try:
-            dl_path = helpers.start_of_day_map(
-                dtime, a.Instrument('EUVI'), a.Wavelength(195 * u.Angstrom))
-        except Exception:
-            map_path = _stereo_map_path(dtime, dl_path, wlen, beacon='_beacon')
-            if not map_path.exists():
-                dl_path = stereo_beacon_start_of_day(dtime, dl_path, wlen)
-            else:
-                dl_path = map_path
+    if map_path.exists():
+        return Map(map_path)
 
-        dl_path.replace(map_path)
+    try:
+        dl_path = helpers.start_of_day_map(
+            dtime, a.Instrument('EUVI'), a.Wavelength(195 * u.Angstrom))
+    except Exception:
+        map_path = _stereo_map_path(dtime, dl_path, wlen, beacon='_beacon')
+        if map_path.exists():
+            return Map(map_path)
+        dl_path = stereo_beacon_start_of_day(dtime, dl_path, wlen)
+
+    dl_path.replace(map_path)
     return Map(map_path)

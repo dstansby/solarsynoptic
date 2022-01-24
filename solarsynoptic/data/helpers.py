@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from pathlib import Path
 
 from astropy.time import Time
 from sunpy.net import Fido
@@ -37,4 +38,4 @@ def start_of_day_map(dtime, *query):
     except IndexError:
         raise RuntimeError(f'No maps available for whole day on {dtime}')
 
-    return download_path
+    return Path(download_path)
