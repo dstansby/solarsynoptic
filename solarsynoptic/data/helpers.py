@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta
 
+from astropy.time import Time
 from sunpy.net import Fido
 from sunpy.net import attrs as a
 from sunpy.time import parse_time
 
 
 def start_of_day(dtime):
+    if isinstance(dtime, Time):
+        dtime = dtime.datetime
     # Get datetime at start of current day
     return datetime(dtime.year, dtime.month, dtime.day)
 
