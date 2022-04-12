@@ -6,9 +6,9 @@ import numpy as np
 from astropy.coordinates import SkyCoord
 from astropy.wcs import WCS
 from reproject import reproject_interp
-from sunpy.sun import constants
 from sunpy import log
 from sunpy.map import Map, make_fitswcs_header
+from sunpy.sun import constants
 
 __all__ = ['reproject_carrington']
 
